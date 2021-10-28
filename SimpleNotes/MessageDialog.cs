@@ -8,7 +8,14 @@ namespace SimpleNotes
     {
         string message = "";
         string title = "";
+        
+        [UI] private Button _button1 = null;
+        [UI] private Button _button2 = null;
+        [UI] private Button _button3 = null;
 
+        public delegate void DialogResultHandler(object sender, DialogResultArgs e);
+        public event DialogResultHandler OnResponse;
+        
         public MessageDialog(string message, string title) : this(message, title, new Builder("Dialog.glade")) { }
 
         private MessageDialog(string message, string title, Builder builder) : base(builder.GetRawOwnedObject("Dialog"))
@@ -17,7 +24,10 @@ namespace SimpleNotes
             this.title = title;
 
             builder.Autoconnect(this);
-            DefaultResponse = ResponseType.Cancel;
+            
+            _button1.Clicked += (object sender, EventArgs args) => OnResponse?.Invoke(this, new(ResponseType.Yes));
+            _button2.Clicked += (object sender, EventArgs args) => OnResponse?.Invoke(this, new(ResponseType.No));
+            _button3.Clicked += (object sender, EventArgs args) => OnResponse?.Invoke(this, new(ResponseType.Cancel));
 
             Response += Dialog_Response;
         }
@@ -25,6 +35,16 @@ namespace SimpleNotes
         private void Dialog_Response(object o, ResponseArgs args)
         {
             Hide();
+        }
+    }
+    
+    public class DialogResultArgs
+    {
+        public ResponseType responseType;
+
+        public DialogResultArgs(ResponseType type)
+        {
+            responseType = type;
         }
     }
 }

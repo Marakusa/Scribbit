@@ -10,6 +10,12 @@ namespace SimpleNotes
     public class MainWindow : Window
     {
         [UI] private TextView _textArea = null;
+        [UI] private ImageMenuItem _fileNew = null;
+        [UI] private ImageMenuItem _fileOpen = null;
+        [UI] private ImageMenuItem _fileSave = null;
+        [UI] private ImageMenuItem _fileSaveAs = null;
+        [UI] private ImageMenuItem _fileQuit = null;
+        [UI] private ImageMenuItem _aboutHelp = null;
 
         public MainWindow() : this(new Builder("Main.glade")) { }
 
@@ -18,9 +24,10 @@ namespace SimpleNotes
             builder.Autoconnect(this);
 
             DeleteEvent += Window_DeleteEvent;
-            KeyPressEvent += TextChanged;
+            _textArea.Buffer.Changed += TextChanged;
+            _fileNew.Activated += (object sender, EventArgs e) => NewFile();
             
-            //NewFile();
+            NewFile();
         }
         
         private void Window_DeleteEvent(object sender, DeleteEventArgs a)
@@ -31,7 +38,7 @@ namespace SimpleNotes
         private bool changed = false;
         private string editorFile = "";
 
-        private void TextChanged(object sender, KeyPressEventArgs e)
+        private void TextChanged(object sender, EventArgs e)
         {
             changed = true;
             UpdateTitle();
@@ -52,27 +59,48 @@ namespace SimpleNotes
             if (changed)
             {
                 MessageDialog dialog = new MessageDialog("Do you want to save the currently edited file?", "New File");
-                dialog.Response += (object sender, ResponseArgs e) => 
+                dialog.OnResponse += (object sender, DialogResultArgs e) => 
                 {
                     //MessageDialog dialogResult = MessageBox.Show("Do you want to save the currently edited file?", "New File", MessageBoxButtons.YesNoCancel);
 
-                    if (e.ResponseId == ResponseType.Yes)
+                    Console.WriteLine(e.responseType.ToString());
+                    
+                    if (e.responseType == ResponseType.Yes)
                     {
                         //if (!SaveFile(false))
+                        //{
+                        //    dialog.Destroy();
                         //    return;
+                        //}
+                        
+                        editorFile = "";
+                        _textArea.Buffer.Text = "";
+                        changed = false;
+
+                        UpdateTitle();
                     }
-                    else if (e.ResponseId == ResponseType.Cancel)
+                    else if (e.responseType == ResponseType.No)
                     {
-                        return;
+                        editorFile = "";
+                        _textArea.Buffer.Text = "";
+                        changed = false;
+
+                        UpdateTitle();
                     }
+                    
+                    dialog.Destroy();
                 };
+                dialog.DestroyWithParent = true;
+                dialog.Show();
             }
+            else
+            {
+                editorFile = "";
+                _textArea.Buffer.Text = "";
+                changed = false;
 
-            editorFile = "";
-            _textArea.Buffer.Text = "";
-            changed = false;
-
-            UpdateTitle();
+                UpdateTitle();
+            }
         }
         /*private void OpenFile()
         {
