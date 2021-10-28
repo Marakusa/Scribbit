@@ -1,5 +1,5 @@
 ﻿
-namespace TextEditor
+namespace SimpleNotes
 {
     partial class MainForm
     {

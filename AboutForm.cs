@@ -7,7 +7,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace TextEditor
+namespace SimpleNotes
 {
     public partial class AboutForm : Form
     {
@@ -26,7 +26,7 @@ namespace TextEditor
         {
             Process.Start(new ProcessStartInfo
             {
-                FileName = "https://raw.githubusercontent.com/Marakusa/TextEditor/master/LICENSE",
+                FileName = "https://raw.githubusercontent.com/Marakusa/SimpleNotes/master/LICENSE",
                 UseShellExecute = true
             });
         }
