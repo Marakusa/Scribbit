@@ -68,11 +68,11 @@ namespace SimpleNotes
                     
                     if (e.responseType == ResponseType.Yes)
                     {
-                        //if (!SaveFile(false))
-                        //{
-                        //    dialog.Destroy();
-                        //    return;
-                        //}
+                        if (!SaveFile(false))
+                        {
+                            dialog.Destroy();
+                            return;
+                        }
                         
                         editorFile = "";
                         _textArea.Buffer.Text = "";
@@ -103,9 +103,9 @@ namespace SimpleNotes
                 UpdateTitle();
             }
         }
-        /*private void OpenFile()
+        private void OpenFile()
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            FileChooserDialog openFileDialog = new FileChooserDialog();
             openFileDialog.Title = "Open a file";
 
             DialogResult result = openFileDialog.ShowDialog();
@@ -171,7 +171,7 @@ namespace SimpleNotes
             return true;
         }
 
-        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        /*private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
             NewFile();
         }
