@@ -26,6 +26,7 @@ namespace SimpleNotes
             DeleteEvent += Window_DeleteEvent;
             _textArea.Buffer.Changed += TextChanged;
             _fileNew.Activated += (object sender, EventArgs e) => NewFile();
+            _fileQuit.Activated += (object sender, EventArgs e) => Application.Quit();
             
             NewFile();
         }
