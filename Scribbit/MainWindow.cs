@@ -11,7 +11,7 @@ using Key = Gdk.Key;
 using UI = Gtk.Builder.ObjectAttribute;
 using Window = Gtk.Window;
 
-namespace SimpleNotes
+namespace Scribbit
 {
     public class MainWindow : Window
     {
@@ -47,7 +47,7 @@ namespace SimpleNotes
             {
                 a.RetVal = true;
 
-                MessageDialog dialog = new("Do you want to save the currently edited file before closing?", "SimpleNotes");
+                MessageDialog dialog = new("Do you want to save the currently edited file before closing?", "Scribbit");
                 dialog.OnResponse += (object sender, DialogResultArgs e) =>
                 {
                     if (e.responseType == ResponseType.Yes)
@@ -112,7 +112,7 @@ namespace SimpleNotes
             if (_editorFile != "")
                 title = System.IO.Path.GetFileName(_editorFile);
 
-            Title = (_changed ? "*" : "") + title + " - SimpleNotes";
+            Title = (_changed ? "*" : "") + title + " - Scribbit";
         }
 
         private delegate void FileSavedHandler(bool success);

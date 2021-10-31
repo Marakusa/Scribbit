@@ -1,5 +1,5 @@
 ﻿
-namespace SimpleNotes
+namespace Scribbit
 {
     partial class AboutForm
     {
@@ -75,7 +75,7 @@ namespace SimpleNotes
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::SimpleNotes.Properties.Resources.appicon1;
+            this.pictureBox1.Image = global::Scribbit.Properties.Resources.appicon1;
             this.pictureBox1.Location = new System.Drawing.Point(12, 13);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(90, 90);

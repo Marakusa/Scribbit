@@ -1,7 +1,7 @@
 using System;
 using Gtk;
 
-namespace SimpleNotes
+namespace Scribbit
 {
     class Program
     {
@@ -10,7 +10,7 @@ namespace SimpleNotes
         {
             Application.Init();
 
-            var app = new Application("org.Marakusa.SimpleNotes", GLib.ApplicationFlags.None);
+            var app = new Application("org.Marakusa.Scribbit", GLib.ApplicationFlags.None);
             app.Register(GLib.Cancellable.Current);
 
             var win = new MainWindow();

@@ -1,10 +1,10 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("SimpleNotes")]
-[assembly: AssemblyDescription("SimpleNotes is a simple and minimal cross-platform text editor.")]
+[assembly: AssemblyTitle("Scribbit")]
+[assembly: AssemblyDescription("Scribbit is a simple and minimal cross-platform text editor.")]
 [assembly: AssemblyCompany("Markus Kannisto")]
-[assembly: AssemblyProduct("SimpleNotes")]
+[assembly: AssemblyProduct("Scribbit")]
 [assembly: AssemblyCopyright("© 2021 Markus Kannisto")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

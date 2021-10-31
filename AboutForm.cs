@@ -7,7 +7,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace SimpleNotes
+namespace Scribbit
 {
     public partial class AboutForm : Form
     {
@@ -26,7 +26,7 @@ namespace SimpleNotes
         {
             Process.Start(new ProcessStartInfo
             {
-                FileName = "https://raw.githubusercontent.com/Marakusa/SimpleNotes/master/LICENSE",
+                FileName = "https://raw.githubusercontent.com/Marakusa/Scribbit/master/LICENSE",
                 UseShellExecute = true
             });
         }
