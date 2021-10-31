@@ -4,3 +4,5 @@
 # TODO
 - [ ] Fix window not remembering last position
 - [ ] Add an installation or a pkgbuild script
+
+![scribbit](https://user-images.githubusercontent.com/29477753/139601332-df554afd-ead2-4b47-8778-01a1ce9becc5.png)
