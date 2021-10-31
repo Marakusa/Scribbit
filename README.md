@@ -1,5 +1,5 @@
 # Scribbit
- Scribbit is a simple and minimal cross-platform text editor.
+Scribbit is a simple, lightweight, and minimal cross-platform text editor.
 
 # TODO
 - [ ] Fix window not remembering last position
