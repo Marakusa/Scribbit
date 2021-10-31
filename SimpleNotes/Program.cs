@@ -17,6 +17,10 @@ namespace SimpleNotes
             app.AddWindow(win);
 
             win.Show();
+
+            if (args.Length > 0)
+                win.OpenFile(String.Join(" ", args));
+            
             Application.Run();
         }
     }

@@ -9,6 +9,7 @@ namespace SimpleNotes
         string message = "";
         string title = "";
         
+        [UI] private Label _message = null;
         [UI] private Button _button1 = null;
         [UI] private Button _button2 = null;
         [UI] private Button _button3 = null;
@@ -22,8 +23,11 @@ namespace SimpleNotes
         {
             this.message = message;
             this.title = title;
-
+            
             builder.Autoconnect(this);
+            
+            _message.Text = this.message;
+            Title = this.title;
             
             _button1.Clicked += (object sender, EventArgs args) => OnResponse?.Invoke(this, new(ResponseType.Yes));
             _button2.Clicked += (object sender, EventArgs args) => OnResponse?.Invoke(this, new(ResponseType.No));
