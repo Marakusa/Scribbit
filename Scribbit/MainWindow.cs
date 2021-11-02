@@ -21,7 +21,9 @@ namespace Scribbit
         [UI] private ImageMenuItem _fileSave = null;
         [UI] private ImageMenuItem _fileSaveAs = null;
         [UI] private ImageMenuItem _fileQuit = null;
-        [UI] private ImageMenuItem _aboutHelp = null;
+        [UI] private ImageMenuItem _helpAbout = null;
+
+        private About aboutDialog = new();
 
         public MainWindow() : this(new("Main.glade")) { }
 
@@ -36,6 +38,14 @@ namespace Scribbit
             _fileSave.Activated += (object sender, EventArgs e) => SaveFile(false);
             _fileSaveAs.Activated += (object sender, EventArgs e) => SaveFile(true);
             _fileQuit.Activated += (object sender, EventArgs e) => Close();
+            _helpAbout.Activated += (object sender, EventArgs e) => 
+            {
+                if (aboutDialog != null)
+                    aboutDialog.Destroy();
+                
+                aboutDialog = new();
+                aboutDialog.Show();
+            };
             KeyPressEvent += KeyBindings;
 
             NewFile();
@@ -143,6 +153,8 @@ namespace Scribbit
 
                                 dialog.Destroy();
                             }
+
+                            OnSaved = null;
                         };
 
                         SaveFile(false);
@@ -182,6 +194,8 @@ namespace Scribbit
             {
                 if (args.ResponseId == ResponseType.Accept)
                 {
+                    string path = openFileDialog.File.Uri.LocalPath;
+
                     if (_changed)
                     {
                         MessageDialog dialog = new("Do you want to save the currently edited file?", "Open a file");
@@ -199,7 +213,7 @@ namespace Scribbit
                                     }
                                     else
                                     {
-                                        _editorFile = openFileDialog.File.Uri.LocalPath;
+                                        _editorFile = path;
                                         _textArea.Buffer.Text = File.ReadAllText(_editorFile);
                                         _changed = false;
                                         UpdateTitle();
@@ -208,6 +222,8 @@ namespace Scribbit
 
                                         openFileDialog.Destroy();
                                     }
+
+                                    OnSaved = null;
                                 };
                                 SaveFile(false);
 
@@ -224,7 +240,7 @@ namespace Scribbit
                                 return;
                             }
 
-                            _editorFile = openFileDialog.File.Uri.LocalPath;
+                            _editorFile = path;
                             _textArea.Buffer.Text = File.ReadAllText(_editorFile);
                             _changed = false;
                             UpdateTitle();
@@ -234,10 +250,11 @@ namespace Scribbit
                             openFileDialog.Destroy();
                         };
                         dialog.Show();
+                        openFileDialog.Hide();
                     }
                     else
                     {
-                        _editorFile = openFileDialog.File.Uri.LocalPath;
+                        _editorFile = path;
                         _textArea.Buffer.Text = File.ReadAllText(_editorFile);
                         _changed = false;
                         UpdateTitle();
