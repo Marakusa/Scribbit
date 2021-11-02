@@ -15,6 +15,8 @@ namespace Scribbit
 {
     public class MainWindow : Window
     {
+        public AppConfig config = new();
+
         [UI] private TextView _textArea = null;
         [UI] private ImageMenuItem _fileNew = null;
         [UI] private ImageMenuItem _fileOpen = null;
@@ -53,6 +55,8 @@ namespace Scribbit
 
         private void Window_DeleteEvent(object sender, DeleteEventArgs a)
         {
+            // Save window position and size.
+            
             if (_changed)
             {
                 a.RetVal = true;
