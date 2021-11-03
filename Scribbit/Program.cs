@@ -10,7 +10,7 @@ namespace Scribbit
         {
             Application.Init();
 
-            var app = new Application("org.Marakusa.Scribbit", GLib.ApplicationFlags.None);
+            var app = new Application("org.Marakusa.Scribbit", GLib.ApplicationFlags.NonUnique);
             app.Register(GLib.Cancellable.Current);
 
             var win = new MainWindow();
