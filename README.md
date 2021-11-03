@@ -2,7 +2,7 @@
 Scribbit is a simple, lightweight, and minimal text editor for Linux.
 
 # TODO
-- [ ] Fix scribbit can't be opened multiple times by opening a file
+- [x] Fix scribbit can't be opened multiple times by opening a file
 - [ ] Fix window not remembering last position
 - [ ] Fix middle click adds text into the textview
 - [ ] Add an installation or a pkgbuild script
