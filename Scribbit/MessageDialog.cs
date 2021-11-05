@@ -1,4 +1,3 @@
-using System;
 using Gtk;
 using UI = Gtk.Builder.ObjectAttribute;
 
@@ -6,32 +5,26 @@ namespace Scribbit
 {
     class MessageDialog : Dialog
     {
-        string message = "";
-        string title = "";
-        
         [UI] private Label _message = null;
         [UI] private Button _button1 = null;
         [UI] private Button _button2 = null;
         [UI] private Button _button3 = null;
 
         public delegate void DialogResultHandler(object sender, DialogResultArgs e);
-        public event DialogResultHandler OnResponse;
+        public new event DialogResultHandler OnResponse;
         
         public MessageDialog(string message, string title) : this(message, title, new Builder("Dialog.glade")) { }
 
         private MessageDialog(string message, string title, Builder builder) : base(builder.GetRawOwnedObject("Dialog"))
         {
-            this.message = message;
-            this.title = title;
-            
             builder.Autoconnect(this);
             
-            _message.Text = this.message;
-            Title = this.title;
+            _message.Text = message;
+            Title = title;
             
-            _button1.Clicked += (object sender, EventArgs args) => OnResponse?.Invoke(this, new(ResponseType.Yes));
-            _button2.Clicked += (object sender, EventArgs args) => OnResponse?.Invoke(this, new(ResponseType.No));
-            _button3.Clicked += (object sender, EventArgs args) => OnResponse?.Invoke(this, new(ResponseType.Cancel));
+            _button1.Clicked += delegate { OnResponse?.Invoke(this, new(ResponseType.Yes)); };
+            _button2.Clicked += delegate { OnResponse?.Invoke(this, new(ResponseType.No)); };
+            _button3.Clicked += delegate { OnResponse?.Invoke(this, new(ResponseType.Cancel)); };
 
             Response += Dialog_Response;
         }
@@ -44,11 +37,11 @@ namespace Scribbit
     
     public class DialogResultArgs
     {
-        public ResponseType responseType;
+        public readonly ResponseType ResponseType;
 
         public DialogResultArgs(ResponseType type)
         {
-            responseType = type;
+            ResponseType = type;
         }
     }
 }

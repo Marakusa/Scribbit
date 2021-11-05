@@ -1,10 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Gdk;
-using GLib;
 using Gtk;
 using Application = Gtk.Application;
 using Key = Gdk.Key;
@@ -15,7 +11,7 @@ namespace Scribbit
 {
     public class MainWindow : Window
     {
-        public AppConfig config = new();
+        public AppConfig Config = new();
 
         [UI] private TextView _textArea = null;
         [UI] private ImageMenuItem _fileNew = null;
@@ -25,27 +21,29 @@ namespace Scribbit
         [UI] private ImageMenuItem _fileQuit = null;
         [UI] private ImageMenuItem _helpAbout = null;
 
-        private About aboutDialog = new();
+        private About _aboutDialog = new();
 
-        public MainWindow() : this(new("Main.glade")) { }
+        public MainWindow() : this(new Builder("Main.glade")) { }
 
         private MainWindow(Builder builder) : base(builder.GetRawOwnedObject("MainWindow"))
         {
             builder.Autoconnect(this);
 
-            string configDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.config/Scribbit/";
+            string configDirectory =
+                $"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.config/Scribbit/";
             
-            this.GetSize(out int width, out int height);
-            this.GetPosition(out int x, out int y);
+            GetSize(out int width, out int height);
+            GetPosition(out int x, out int y);
 
             if (!Directory.Exists(configDirectory))
                 Directory.CreateDirectory(configDirectory);
             
-            if (!File.Exists(configDirectory + "/position"))
-                File.WriteAllText(configDirectory + "/position", x.ToString() + "," + y.ToString() + "," + width.ToString() + "," + height.ToString() + "," + (this.IsMaximized ? "1" : "0"));
+            if (!File.Exists($"{configDirectory}/position"))
+                File.WriteAllText($"{configDirectory}/position",
+                    $"{x},{y},{width},{height},{(IsMaximized ? "1" : "0")}");
             else
             {
-                string[] lines = File.ReadAllText(configDirectory + "/position").Split("\n");
+                string[] lines = File.ReadAllText($"{configDirectory}/position").Split("\n");
                 string[] values = lines[0].Split(",");
                 
                 int savedX = x;
@@ -65,27 +63,27 @@ namespace Scribbit
                 if (values.Length > 4)
                     int.TryParse(values[4], out savedM);
 
-                this.Move(savedX, savedY);
-                this.Resize(savedW, savedH);
+                Move(savedX, savedY);
+                Resize(savedW, savedH);
 
                 if (savedM == 1)
-                    this.Maximize();
+                    Maximize();
             }
 
             DeleteEvent += Window_DeleteEvent;
             _textArea.Buffer.Changed += TextChanged;
-            _fileNew.Activated += (object sender, EventArgs e) => NewFile();
-            _fileOpen.Activated += (object sender, EventArgs e) => OpenFile();
-            _fileSave.Activated += (object sender, EventArgs e) => SaveFile(false);
-            _fileSaveAs.Activated += (object sender, EventArgs e) => SaveFile(true);
-            _fileQuit.Activated += (object sender, EventArgs e) => Close();
-            _helpAbout.Activated += (object sender, EventArgs e) => 
+            _fileNew.Activated += delegate { NewFile(); };
+            _fileOpen.Activated += delegate { OpenFile(); };
+            _fileSave.Activated += delegate { SaveFile(false); };
+            _fileSaveAs.Activated += delegate { SaveFile(true); };
+            _fileQuit.Activated += delegate { Close(); };
+            _helpAbout.Activated += delegate
             {
-                if (aboutDialog != null)
-                    aboutDialog.Destroy();
-                
-                aboutDialog = new();
-                aboutDialog.Show();
+                if (_aboutDialog != null)
+                    _aboutDialog.Destroy();
+
+                _aboutDialog = new();
+                _aboutDialog.Show();
             };
             KeyPressEvent += KeyBindings;
 
@@ -94,15 +92,16 @@ namespace Scribbit
 
         private void Window_DeleteEvent(object sender, DeleteEventArgs a)
         {
-            string configDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.config/Scribbit/";
+            string configDirectory =
+                $"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.config/Scribbit/";
             
-            this.GetSize(out int width, out int height);
-            this.GetPosition(out int x, out int y);
+            GetSize(out int width, out int height);
+            GetPosition(out int x, out int y);
 
             if (!Directory.Exists(configDirectory))
                 Directory.CreateDirectory(configDirectory);
             
-            File.WriteAllText(configDirectory + "/position", x.ToString() + "," + y.ToString() + "," + width.ToString() + "," + height.ToString() + "," + (this.IsMaximized ? "1" : "0"));
+            File.WriteAllText($"{configDirectory}/position", $"{x},{y},{width},{height},{(IsMaximized ? "1" : "0")}");
             
             if (_changed)
             {
@@ -111,7 +110,7 @@ namespace Scribbit
                 MessageDialog dialog = new("Do you want to save the currently edited file before closing?", "Scribbit");
                 dialog.OnResponse += (object sender, DialogResultArgs e) =>
                 {
-                    if (e.responseType == ResponseType.Yes)
+                    if (e.ResponseType == ResponseType.Yes)
                     {
                         OnSaved = (success) =>
                         {
@@ -137,7 +136,7 @@ namespace Scribbit
 
                         return;
                     }
-                    else if (e.responseType == ResponseType.Cancel)
+                    else if (e.ResponseType == ResponseType.Cancel)
                     {
                         Show();
                         dialog.Destroy();
@@ -157,7 +156,7 @@ namespace Scribbit
             }
         }
 
-        private bool _changed = false;
+        private bool _changed;
         private string _editorFile = "";
 
         private void TextChanged(object sender, EventArgs e)
@@ -173,7 +172,7 @@ namespace Scribbit
             if (_editorFile != "")
                 title = System.IO.Path.GetFileName(_editorFile);
 
-            Title = (_changed ? "*" : "") + title + " - Scribbit";
+            Title = $"{(_changed ? "*" : "")}{title} - Scribbit";
         }
 
         private delegate void FileSavedHandler(bool success);
@@ -186,7 +185,7 @@ namespace Scribbit
                 MessageDialog dialog = new("Do you want to save the currently edited file?", "New File");
                 dialog.OnResponse += (object sender, DialogResultArgs e) =>
                 {
-                    if (e.responseType == ResponseType.Yes)
+                    if (e.ResponseType == ResponseType.Yes)
                     {
                         OnSaved = (success) =>
                         {
@@ -212,7 +211,7 @@ namespace Scribbit
 
                         return;
                     }
-                    else if (e.responseType == ResponseType.Cancel)
+                    else if (e.ResponseType == ResponseType.Cancel)
                     {
                         dialog.Destroy();
                         return;
@@ -252,7 +251,7 @@ namespace Scribbit
                         MessageDialog dialog = new("Do you want to save the currently edited file?", "Open a file");
                         dialog.OnResponse += (object sender, DialogResultArgs e) =>
                         {
-                            if (e.responseType == ResponseType.Yes)
+                            if (e.ResponseType == ResponseType.Yes)
                             {
                                 OnSaved = (success) =>
                                 {
@@ -282,7 +281,7 @@ namespace Scribbit
 
                                 return;
                             }
-                            else if (e.responseType == ResponseType.Cancel)
+                            else if (e.ResponseType == ResponseType.Cancel)
                             {
                                 dialog.Destroy();
 
