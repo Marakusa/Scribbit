@@ -14,12 +14,18 @@ namespace Scribbit
         public AppConfig Config = new();
 
         [UI] private TextView _textArea = null;
+        [UI] private TextView _find = null;
         [UI] private ImageMenuItem _fileNew = null;
         [UI] private ImageMenuItem _fileOpen = null;
         [UI] private ImageMenuItem _fileSave = null;
         [UI] private ImageMenuItem _fileSaveAs = null;
         [UI] private ImageMenuItem _fileQuit = null;
         [UI] private ImageMenuItem _helpAbout = null;
+        [UI] private ImageMenuItem _editCopy = null;
+        [UI] private ImageMenuItem _editPaste = null;
+        [UI] private ImageMenuItem _editCut = null;
+        [UI] private ImageMenuItem _editFind = null;
+        [UI] private ImageMenuItem _editFindReplace = null;
 
         private About _aboutDialog = new();
 
@@ -71,7 +77,11 @@ namespace Scribbit
             }
 
             DeleteEvent += Window_DeleteEvent;
-            _textArea.Buffer.Changed += TextChanged;
+            _textArea.Buffer.Changed += (sender, args) =>
+            {
+                Console.WriteLine(_textArea.Buffer.Text);
+            };
+            _textArea.DeleteFromCursor += DeleteRange;
             _fileNew.Activated += delegate { NewFile(); };
             _fileOpen.Activated += delegate { OpenFile(); };
             _fileSave.Activated += delegate { SaveFile(false); };
@@ -85,6 +95,10 @@ namespace Scribbit
                 _aboutDialog = new();
                 _aboutDialog.Show();
             };
+            _editCopy.Activated += delegate(object? sender, EventArgs args) { _textArea.Buffer.CopyClipboard(Clipboard.GetDefault(Display.Default)); };
+            _editCut.Activated += delegate(object? sender, EventArgs args) { _textArea.Buffer.CutClipboard(Clipboard.GetDefault(Display.Default), true); };
+            _editPaste.Activated += delegate(object? sender, EventArgs args) { _textArea.Buffer.PasteClipboard(Clipboard.GetDefault(Display.Default)); };
+            _editFind.Activated += delegate(object? sender, EventArgs args) { Find(); };
             KeyPressEvent += KeyBindings;
 
             NewFile();
@@ -159,12 +173,34 @@ namespace Scribbit
         private bool _changed;
         private string _editorFile = "";
 
-        private void TextChanged(object sender, EventArgs e)
+        private void DeleteRange(object sender, DeleteFromCursorArgs e)
         {
+            foreach (var v in e.Args)
+            {
+                Console.WriteLine(v.ToString());
+            }
+            Console.WriteLine(e.Args.Length);
+            Console.WriteLine(e.Count);
+            Console.WriteLine(e.Type.ToString());
             _changed = true;
             UpdateTitle();
         }
 
+        private void Find()
+        {
+            _find.Visible = !_find.Visible;
+            
+            if (_find.Visible)
+                _find.GrabFocus();
+            else
+                _textArea.GrabFocus();
+            
+            if (_find.Buffer.Text.Length > 0 && _find.Visible)
+            {
+                // TODO: Select all find field
+            }
+        }
+        
         private void UpdateTitle()
         {
             string title = "Untitled";
@@ -372,6 +408,7 @@ namespace Scribbit
                 else if (key.Key == Key.s) SaveFile(false);
                 else if (key.Key == Key.S) SaveFile(true);
                 else if (key.Key == Key.q) Close();
+                else if (key.Key == Key.f) Find();
             }
         }
 
