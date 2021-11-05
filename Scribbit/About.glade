@@ -5,7 +5,7 @@
   <object class="GtkAboutDialog" id="AboutDialog">
     <property name="can-focus">False</property>
     <property name="type-hint">dialog</property>
-    <property name="program-name">Scribbit</property>
+    <property name="program-name">Scribbit 2021.1105.2</property>
     <property name="copyright" translatable="yes">© 2021 Markus Kannisto</property>
     <property name="website">https://github.com/Marakusa/Scribbit</property>
     <property name="authors">Markus Kannisto</property>
