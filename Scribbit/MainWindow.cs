@@ -33,6 +33,45 @@ namespace Scribbit
         {
             builder.Autoconnect(this);
 
+            string configDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.config/Scribbit/";
+            
+            this.GetSize(out int width, out int height);
+            this.GetPosition(out int x, out int y);
+
+            if (!Directory.Exists(configDirectory))
+                Directory.CreateDirectory(configDirectory);
+            
+            if (!File.Exists(configDirectory + "/position"))
+                File.WriteAllText(configDirectory + "/position", x.ToString() + "," + y.ToString() + "," + width.ToString() + "," + height.ToString() + "," + (this.IsMaximized ? "1" : "0"));
+            else
+            {
+                string[] lines = File.ReadAllText(configDirectory + "/position").Split("\n");
+                string[] values = lines[0].Split(",");
+                
+                int savedX = x;
+                int savedY = y;
+                int savedW = width;
+                int savedH = height;
+                int savedM = 0;
+
+                if (values.Length > 0)
+                    int.TryParse(values[0], out savedX);
+                if (values.Length > 1)
+                    int.TryParse(values[1], out savedY);
+                if (values.Length > 2)
+                    int.TryParse(values[2], out savedW);
+                if (values.Length > 3)
+                    int.TryParse(values[3], out savedH);
+                if (values.Length > 4)
+                    int.TryParse(values[4], out savedM);
+
+                this.Move(savedX, savedY);
+                this.Resize(savedW, savedH);
+
+                if (savedM == 1)
+                    this.Maximize();
+            }
+
             DeleteEvent += Window_DeleteEvent;
             _textArea.Buffer.Changed += TextChanged;
             _fileNew.Activated += (object sender, EventArgs e) => NewFile();
@@ -55,7 +94,15 @@ namespace Scribbit
 
         private void Window_DeleteEvent(object sender, DeleteEventArgs a)
         {
-            // Save window position and size.
+            string configDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.config/Scribbit/";
+            
+            this.GetSize(out int width, out int height);
+            this.GetPosition(out int x, out int y);
+
+            if (!Directory.Exists(configDirectory))
+                Directory.CreateDirectory(configDirectory);
+            
+            File.WriteAllText(configDirectory + "/position", x.ToString() + "," + y.ToString() + "," + width.ToString() + "," + height.ToString() + "," + (this.IsMaximized ? "1" : "0"));
             
             if (_changed)
             {
