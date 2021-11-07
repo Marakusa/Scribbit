@@ -18,11 +18,6 @@ yay scribbit
 ```
 
 # TODO
-- [ ] Add undo and redo
-- [ ] Add edit context menu
-- [ ] Add appearance customization
-- [ ] Fix middle click adds text into the textview
-- [ ] Add cursor position command line arguments
-- [ ] Add build scripts and packages for Ubuntu and Debian
+[https://github.com/Marakusa/Scribbit/projects/](https://github.com/Marakusa/Scribbit/projects/)
 
-![scribbit](https://user-images.githubusercontent.com/29477753/139601332-df554afd-ead2-4b47-8778-01a1ce9becc5.png)
+![scribbit](https://user-images.githubusercontent.com/29477753/140642647-39fd58e4-2928-4bf7-b8e3-de30f5e3db91.png)
