@@ -7,7 +7,7 @@
     <property name="title">Untitled - Scribbit</property>
     <property name="default-width">750</property>
     <property name="default-height">450</property>
-    <property name="icon-name">text-editor</property>
+    <property name="icon-name">scribbit</property>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>

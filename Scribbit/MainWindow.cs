@@ -29,6 +29,8 @@ namespace Scribbit
 
         private About _aboutDialog = new();
 
+        public EditHistory history;
+
         public MainWindow() : this(new Builder("Main.glade")) { }
 
         private MainWindow(Builder builder) : base(builder.GetRawOwnedObject("MainWindow"))
@@ -77,10 +79,10 @@ namespace Scribbit
             }
 
             DeleteEvent += Window_DeleteEvent;
-            _textArea.Buffer.Changed += (sender, args) =>
+            /*_textArea.Buffer.Changed += (sender, args) =>
             {
                 Console.WriteLine(_textArea.Buffer.Text);
-            };
+            };*/
             _textArea.DeleteFromCursor += DeleteRange;
             _fileNew.Activated += delegate { NewFile(); };
             _fileOpen.Activated += delegate { OpenFile(); };
@@ -95,10 +97,10 @@ namespace Scribbit
                 _aboutDialog = new();
                 _aboutDialog.Show();
             };
-            _editCopy.Activated += delegate(object? sender, EventArgs args) { _textArea.Buffer.CopyClipboard(Clipboard.GetDefault(Display.Default)); };
-            _editCut.Activated += delegate(object? sender, EventArgs args) { _textArea.Buffer.CutClipboard(Clipboard.GetDefault(Display.Default), true); };
-            _editPaste.Activated += delegate(object? sender, EventArgs args) { _textArea.Buffer.PasteClipboard(Clipboard.GetDefault(Display.Default)); };
-            _editFind.Activated += delegate(object? sender, EventArgs args) { Find(); };
+            _editCopy.Activated += delegate(object sender, EventArgs args) { _textArea.Buffer.CopyClipboard(Clipboard.GetDefault(Display.Default)); };
+            _editCut.Activated += delegate(object sender, EventArgs args) { _textArea.Buffer.CutClipboard(Clipboard.GetDefault(Display.Default), true); };
+            _editPaste.Activated += delegate(object sender, EventArgs args) { _textArea.Buffer.PasteClipboard(Clipboard.GetDefault(Display.Default)); };
+            _editFind.Activated += delegate(object sender, EventArgs args) { Find(); };
             KeyPressEvent += KeyBindings;
 
             NewFile();
@@ -235,6 +237,8 @@ namespace Scribbit
                                 _textArea.Buffer.Text = "";
                                 _changed = false;
 
+                                history = new("");
+
                                 UpdateTitle();
 
                                 dialog.Destroy();
@@ -257,6 +261,8 @@ namespace Scribbit
                     _textArea.Buffer.Text = "";
                     _changed = false;
 
+                    history = new("");
+
                     UpdateTitle();
 
                     dialog.Destroy();
@@ -269,6 +275,8 @@ namespace Scribbit
                 _editorFile = "";
                 _textArea.Buffer.Text = "";
                 _changed = false;
+
+                history = new("");
 
                 UpdateTitle();
             }
@@ -304,6 +312,8 @@ namespace Scribbit
                                         _changed = false;
                                         UpdateTitle();
 
+                                        history = new(_textArea.Buffer.Text);
+
                                         dialog.Destroy();
 
                                         openFileDialog.Destroy();
@@ -331,6 +341,8 @@ namespace Scribbit
                             _changed = false;
                             UpdateTitle();
 
+                            history = new(_textArea.Buffer.Text);
+
                             dialog.Destroy();
 
                             openFileDialog.Destroy();
@@ -344,6 +356,8 @@ namespace Scribbit
                         _textArea.Buffer.Text = File.ReadAllText(_editorFile);
                         _changed = false;
                         UpdateTitle();
+
+                        history = new(_textArea.Buffer.Text);
 
                         openFileDialog.Destroy();
                     }
@@ -420,6 +434,8 @@ namespace Scribbit
                 _textArea.Buffer.Text = File.ReadAllText(_editorFile);
                 _changed = false;
                 UpdateTitle();
+
+                history = new(_textArea.Buffer.Text);
             }
         }
 
