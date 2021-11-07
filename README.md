@@ -25,4 +25,4 @@ yay scribbit
 - [ ] Add cursor position command line arguments
 - [ ] Add build scripts and packages for Ubuntu and Debian
 
-
+![scribbit](https://user-images.githubusercontent.com/29477753/140642647-39fd58e4-2928-4bf7-b8e3-de30f5e3db91.png)
