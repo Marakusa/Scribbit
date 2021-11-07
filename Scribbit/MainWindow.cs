@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Gdk;
 using Gtk;
@@ -30,6 +31,9 @@ namespace Scribbit
         private About _aboutDialog = new();
 
         public EditHistory history;
+
+        private string _lastSearch = "";
+        private List<FoundString> _foundStrings = new();
 
         public MainWindow() : this(new Builder("Main.glade")) { }
 
@@ -79,10 +83,60 @@ namespace Scribbit
             }
 
             DeleteEvent += Window_DeleteEvent;
-            /*_textArea.Buffer.Changed += (sender, args) =>
+            _textArea.Buffer.Changed += (sender, args) =>
             {
                 Console.WriteLine(_textArea.Buffer.Text);
-            };*/
+            };
+            _find.Buffer.Changed += (sender, args) =>
+            {
+                string findText = _find.Buffer.Text;
+                if (findText != "" && findText != _lastSearch)
+                {
+                    Console.WriteLine(findText);
+                    _lastSearch = findText;
+                    _foundStrings.Clear();
+
+                    string[] file = _textArea.Buffer.Text.Split("\n");
+                    int lineIndex = 0;
+                    foreach (string line in file)
+                    {
+                        for (int i = 0; i < line.Length; i++)
+                        {
+                            if (i + findText.Length <= line.Length)
+                            {
+                                if (line.Substring(i, findText.Length) == findText)
+                                {
+                                    _foundStrings.Add(new(i, i + findText.Length - 1, lineIndex));
+                                    i += findText.Length - 1;
+                                }
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+
+                        lineIndex++;
+                    }
+
+                    foreach (var finding in _foundStrings)
+                    {
+                        string line = file[finding.lineIndex];
+                        _textArea.Buffer.PlaceCursor(new()
+                        {
+                            Line = finding.lineIndex,
+                            LineIndex = finding.lineIndex,
+                            Offset = finding.startIndex
+                        });
+                        Console.WriteLine(line.Substring(finding.startIndex, line.Length - finding.endIndex));
+                    }
+                }
+                else
+                {
+                    _lastSearch = "";
+                    _foundStrings.Clear();
+                }
+            };
             _textArea.DeleteFromCursor += DeleteRange;
             _fileNew.Activated += delegate { NewFile(); };
             _fileOpen.Activated += delegate { OpenFile(); };
@@ -199,7 +253,8 @@ namespace Scribbit
             
             if (_find.Buffer.Text.Length > 0 && _find.Visible)
             {
-                // TODO: Select all find field
+                // TODO: Replace clear with select all in find field
+                _find.Buffer.Text = "";
             }
         }
         
@@ -438,17 +493,19 @@ namespace Scribbit
                 history = new(_textArea.Buffer.Text);
             }
         }
+    }
 
-        /*private void KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.W && e.Control)
-                Application.Exit();
-        }*/
+    public class FoundString
+    {
+        public int startIndex;
+        public int endIndex;
+        public int lineIndex;
 
-        /*private void aboutToolStripMenuItem1_Click(object sender, EventArgs e)
+        public FoundString(int start, int end, int line)
         {
-            AboutForm aboutForm = new();
-            aboutForm.ShowDialog();
-        }*/
+            startIndex = start;
+            endIndex = end;
+            lineIndex = line;
+        }
     }
 }

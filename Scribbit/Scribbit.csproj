@@ -18,17 +18,12 @@
     <PackageReference Include="GtkSharp" Version="3.24.24.*" />
   </ItemGroup>
 
-  <PropertyGroup>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <ApplicationIcon>appicon.ico</ApplicationIcon>
-  </PropertyGroup>
-
   <ItemGroup>
     <None Include="..\LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
-    <None Include="res\appicon.png">
+    <None Include="res\scribbit.svg">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
